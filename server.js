@@ -16,7 +16,9 @@ app.use(express.static('src'));
 
 app.set('port', process.env.PORT || 3000);
 
-
+app.get('/', function (req, res) {
+  res.send('Hello World!')
+})
 
 app.listen(app.get('port'), () => {
   console.log(`It's lit AF over at ${app.get('port')}`);
