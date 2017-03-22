@@ -8,6 +8,10 @@ const request = require('request');
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
+const repData = require('./repData.js');
+const senData = require('./senateData.js');
+
+
 
 app.use(cors());
 app.use(function(req, res, next) {
@@ -21,64 +25,93 @@ app.use(express.static('src'));
 
 app.set('port', process.env.PORT || 3000);
 
-request('https://www.govtrack.us/api/v2/role?current=true', function (error, response, body) {
-  if (!error && response.statusCode == 200) {
-    body = JSON.parse(body)
-    const data = body['objects'];
-    let senData = [];
-    let repData = [];
-    let states = [];
+// request('https://www.govtrack.us/api/v2/role?current=true', function (error, response, body) {
+//   if (!error && response.statusCode == 200) {
+//     body = JSON.parse(body)
+//     const data = body['objects'];
+//     let senData = [];
+//     let repData = [];
+let states = [];
 
-    data.forEach(obj => {
-      if(obj.role_type === 'senator') {
-        const senObj = {
-          first_name: obj.person.firstname,
-          last_name: obj.person.lastname,
-          role_type: obj.role_type,
-          party: obj.party,
-          birthday: obj.person.birthday,
-          gender: obj.person.gender,
-          state: obj.state,
-          start_date: obj.startdate,
-          end_date: obj.enddate
-        }
-        senData.push(senObj)
-      }
-    })
+const senators = senData.map(obj => {
+  const newObj = {
+    first_name: obj.first_name,
+    last_name: obj.last_name,
+    role_type: 'senator',
+    party: obj.party,
+    next_election: obj.next_election,
+    state: obj.state
+  }
+  return newObj
+})
 
-    // database('senators').insert(senData)
-    // .then(() => {
-    //   database('senators').select()
-    //   .then((senators) => {
-    //   })
-    // })
+const reps = repData.map(obj => {
+  const newObj = {
+    first_name: obj.first_name,
+    last_name: obj.last_name,
+    role_type: 'senator',
+    party: obj.party,
+    next_election: obj.next_election,
+    state: obj.state,
+    district: obj.district
+  }
+  return newObj
+})
 
-    data.forEach(obj => {
-      if(obj.role_type === 'representative') {
-        const repObj = {
-          first_name: obj.person.firstname,
-          last_name: obj.person.lastname,
-          role_type: obj.role_type,
-          party: obj.party,
-          birthday: obj.person.birthday,
-          gender: obj.person.gender,
-          state: obj.state,
-          district: obj.district,
-          start_date: obj.startdate,
-          end_date: obj.enddate
-        }
-        repData.push(repObj)
-      }
-    })
+const data = repData.concat(senData);
 
 
-    // database('representatives').insert(repData)
-    // .then(() => {
-    //   database('representatives').select()
-    //   .then((reps) => {
-    //   })
-    // })
-
+//
+//     data.forEach(obj => {
+//       if(obj.role_type === 'senator') {
+//         const senObj = {
+//           first_name: obj.person.firstname,
+//           last_name: obj.person.lastname,
+//           role_type: obj.role_type,
+//           party: obj.party,
+//           birthday: obj.person.birthday,
+//           gender: obj.person.gender,
+//           state: obj.state,
+//           start_date: obj.startdate,
+//           end_date: obj.enddate
+//         }
+//         senData.push(senObj)
+//       }
+//     })
+//
+//     // database('senators').insert(senData)
+//     // .then(() => {
+//     //   database('senators').select()
+//     //   .then((senators) => {
+//     //   })
+//     // })
+//
+//     data.forEach(obj => {
+//       if(obj.role_type === 'representative') {
+//         const repObj = {
+//           first_name: obj.person.firstname,
+//           last_name: obj.person.lastname,
+//           role_type: obj.role_type,
+//           party: obj.party,
+//           birthday: obj.person.birthday,
+//           gender: obj.person.gender,
+//           state: obj.state,
+//           district: obj.district,
+//           start_date: obj.startdate,
+//           end_date: obj.enddate
+//         }
+//         repData.push(repObj)
+//       }
+//     })
+//
+//
+//     // database('representatives').insert(repData)
+//     // .then(() => {
+//     //   database('representatives').select()
+//     //   .then((reps) => {
+//     //   })
+//     // })
+//
     const stateObject = data.reduce((stateObj, obj)  => {
       let st = obj.state
       if(!stateObj[st]) {
@@ -90,12 +123,13 @@ request('https://www.govtrack.us/api/v2/role?current=true', function (error, res
       } else {
         if(obj.role_type === 'senator') {
           stateObj[st].num_of_sens++
-        } else {
+        } else if (obj.role_type === 'rep') {
           stateObj[st].num_of_reps++
         }
       }
       return stateObj
     }, {})
+
 
     Object.keys(stateObject).forEach(state => {
       const obj = {
@@ -110,7 +144,7 @@ request('https://www.govtrack.us/api/v2/role?current=true', function (error, res
     .then(() => {
       database('states').select()
       .then((states) => {
-        senData.forEach(senObj => {
+        const finalSenData = senators.map(senObj => {
           let id;
           states.forEach(obj => {
             if(obj.state === senObj.state) {
@@ -118,9 +152,10 @@ request('https://www.govtrack.us/api/v2/role?current=true', function (error, res
             }
           })
           senObj.state_id = id
+          return senObj
         })
 
-        repData.forEach(repObj => {
+        const finalRepData = reps.map(repObj => {
           let id;
           states.forEach(obj => {
             if(obj.state === repObj.state) {
@@ -128,21 +163,17 @@ request('https://www.govtrack.us/api/v2/role?current=true', function (error, res
             }
           })
           repObj.state_id = id
+          return repObj
         })
-        database('senators').insert(senData)
+        database('senators').insert(finalSenData)
         .then(() => {
-          database('representatives').insert(repData)
+          database('representatives').insert(finalRepData)
           .then(() => {
             console.log('data loaded!');
           })
         })
       })
     })
-  }
-})
-
-
-
 
 
 
