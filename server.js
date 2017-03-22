@@ -2,7 +2,12 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const router = express.Router();
 const fs = require('fs');
+const request = require('request');
+const environment = process.env.NODE_ENV || 'development';
+const configuration = require('./knexfile')[environment];
+const database = require('knex')(configuration);
 
 app.use(cors());
 app.use(function(req, res, next) {
@@ -16,9 +21,11 @@ app.use(express.static('src'));
 
 app.set('port', process.env.PORT || 3000);
 
-app.get('/', function (req, res) {
-  res.send('Hello World!')
-})
+
+
+
+
+
 
 app.listen(app.get('port'), () => {
   console.log(`It's lit AF over at ${app.get('port')}`);
