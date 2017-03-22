@@ -21,6 +21,35 @@ app.use(express.static('src'));
 
 app.set('port', process.env.PORT || 3000);
 
+request('https://www.govtrack.us/api/v2/role?current=true', function (error, response, body) {
+  if (!error && response.statusCode == 200) {
+    body = JSON.parse(body)
+    const data = body['objects'];
+    const senData = data.map(obj => {
+      return {
+        first_name: obj.person.firstname,
+        last_name: obj.person.lastname,
+        role_type: obj.role_type,
+        party: obj.party,
+        birthday: obj.person.birthday,
+        gender: obj.person.gender,
+        state: obj.state,
+        start_date: obj.startdate,
+        end_date: obj.enddate
+      }
+    })
+    database('senators').insert(senData)
+    .then(() => {
+      database('senators').select()
+      .then((senators) => {
+        console.log(senators);
+      })
+    })
+  }
+
+  
+})
+
 
 
 
