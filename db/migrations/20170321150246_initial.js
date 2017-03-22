@@ -5,13 +5,10 @@ exports.up = function(knex, Promise) {
       table.increments('id').primary();
       table.string('first_name');
       table.string('last_name');
-      table.string('role_type')
+      table.string('role_type');
+      table.string('next_election');
       table.string('party');
-      table.string('birthday');
-      table.string('gender');
       table.string('state');
-      table.string('start_date')
-      table.string('end_date')
       table.timestamps();
       table.integer('state_id')
            .references('id')
@@ -22,14 +19,11 @@ exports.up = function(knex, Promise) {
       table.increments('id').primary();
       table.string('first_name');
       table.string('last_name');
-      table.string('role_type')
+      table.string('role_type');
+      table.string('next_election');
       table.string('party');
-      table.string('birthday');
-      table.string('gender');
       table.string('state');
       table.string('district');
-      table.string('start_date')
-      table.string('end_date')
       table.timestamps();
       table.integer('state_id')
            .references('id')
