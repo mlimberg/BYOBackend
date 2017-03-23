@@ -6,9 +6,8 @@ exports.up = function(knex, Promise) {
       table.string('first_name');
       table.string('last_name');
       table.string('role_type');
-      table.string('next_election');
+      table.integer('next_election');
       table.string('party');
-      table.string('state');
       table.timestamps();
       table.integer('state_id')
            .references('id')
@@ -20,10 +19,9 @@ exports.up = function(knex, Promise) {
       table.string('first_name');
       table.string('last_name');
       table.string('role_type');
-      table.string('next_election');
+      table.integer('next_election');
       table.string('party');
-      table.string('state');
-      table.string('district');
+      table.integer('district');
       table.timestamps();
       table.integer('state_id')
            .references('id')
@@ -34,7 +32,7 @@ exports.up = function(knex, Promise) {
       table.increments('id').primary();
       table.string('state');
       table.integer('num_of_reps');
-      table.string('num_of_sens')
+      table.integer('num_of_sens')
       table.timestamps();
     })
 
