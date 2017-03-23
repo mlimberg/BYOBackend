@@ -25,30 +25,31 @@ app.set('port', process.env.PORT || 3000);
 //GET REQUESTS
 
 app.get('/api/v1/senators', (request, response) => {
-  const party  = request.param('party');
+  // const party  = request.param('party');
+  const { party }  = request.query;
   database('senators').where('party', party).select()
   .then(sens => response.status(200).send(sens))
-  .catch(err => response.send(404))
+  .catch(err => response.sendStatus(404))
 })
 
 app.get('/api/v1/senators/:id', (request, response) => {
   const { id } = request.params;
   database('senators').where('id', id).select()
   .then(senator => response.status(200).send(senator))
-  .catch(err => response.send(404))
+  .catch(err => response.sendStatus(404))
 })
 
 app.get('/api/v1/reps', (request, response) => {
   database('representatives').select()
   .then(reps => response.status(200).send(reps))
-  .catch(err => response.send(404))
+  .catch(err => response.sendStatus(404))
 })
 
 app.get('/api/v1/reps/:id', (request, response) => {
   const { id } = request.params;
   database('representatives').where('id', id).select()
   .then(rep => response.status(200).send(rep))
-  .catch(err => response.send(404))
+  .catch(err => response.sendStatus(404))
 })
 
 app.get('/api/v1/states', (request, response) => {
@@ -60,7 +61,7 @@ app.get('/api/v1/states/:id', (request, response) => {
   const { id } = request.params;
   database('states').where('id', id).select()
   .then(state => response.status(200).send(state))
-  .catch(err => response.send(404))
+  .catch(err => response.sendStatus(404))
 })
 
 //years left in office - still need to calculate years left correctly and then assign correctly
@@ -217,9 +218,6 @@ app.delete('/api/v1/states/:id', (request, response) => {
     })
   })
 })
-
-
-
 
 
 app.listen(app.get('port'), () => {
