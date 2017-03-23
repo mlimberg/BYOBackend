@@ -23,9 +23,11 @@ app.set('port', process.env.PORT || 3000);
 
 
 //GET REQUESTS
+
 app.get('/api/v1/senators', (request, response) => {
-  database('senators').select()
-  .then(senators => response.status(200).send(senators))
+  const party  = request.param('party');
+  database('senators').where('party', party).select()
+  .then(sens => response.status(200).send(sens))
 })
 
 app.get('/api/v1/senators/:id', (request, response) => {
@@ -52,9 +54,23 @@ app.get('/api/v1/states', (request, response) => {
 })
 
 app.get('/api/v1/states/:id', (request, response) => {
-  const { id } = request.params
+  const { id } = request.params;
   database('states').where('id', id).select()
   .then(state => response.status(200).send(state))
+})
+
+//years left in office - still need to calculate years left correctly and then assign correctly
+app.get('/api/v1/senators/:id/remaining', (request, response) => {
+  const { id } = request.params;
+
+  database('senators').where('id', id).select()
+  .then(senator => {
+    const currentYear = new Date().getFullYear();
+    const years_left = senator[0].next_election - currentYear;
+    return Object.assign(senator[0], {years_left})
+  })
+  .then(newObj => response.status(200).send(newObj))
+  .catch(err => response.status(404).send(404))
 })
 
 //POST REQUESTS

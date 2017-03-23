@@ -25,12 +25,6 @@ app.use(express.static('src'));
 
 app.set('port', process.env.PORT || 3000);
 
-// request('https://www.govtrack.us/api/v2/role?current=true', function (error, response, body) {
-//   if (!error && response.statusCode == 200) {
-//     body = JSON.parse(body)
-//     const data = body['objects'];
-//     let senData = [];
-//     let repData = [];
 let states = [];
 
 const senators = senData.map(obj => {
