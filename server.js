@@ -96,62 +96,40 @@ app.get('/api/v1/reps/:id/remaining', (request, response) => {
 
 app.post('/api/v1/senators', (request, response) => {
   const { senator } = request.body;
-  let state_id;
-  let num_of_sens;
-
-  database('states').select()
-  .then(states => {
-    states.forEach(state => {
-      if(state.state === senator.state) {
-        state_id = parseInt(state.id);
-        num_of_sens = parseInt(state.num_of_sens) + 1;
-      }
-    })
-    return { state_id, num_of_sens }
-  })
-  .then(res => {
-    const newObj = Object.assign(senator, { state_id: res.state_id })
-    database('senators').insert(newObj)
+  database('senators').insert(senator)
+  .then(() => {
+    database('senators').select()
+    .then(senators => response.status(200).send(senators))
     .then(() => {
-      database('senators').select()
-      .then(senators => response.status(200).send(senators))
-      .then(() => {
-        database('states').where('id', res.state_id).update({ num_of_sens: res.num_of_sens })
+      database('states').where('id', senator.state_id).select()
+      .then(state => {
+        const update = state[0].num_of_sens + 1;
+        console.log(update);
+        database('states').where('id', senator.state_id).update({ num_of_sens: update })
         .then(() => console.log('states updated!'))
       })
-      .catch(err => response.send(422, { error: 'Could not process new record'}))
     })
+    .catch(err => response.status(422).send({ error: 'Could not process new record'}))
   })
 })
 
 app.post('/api/v1/reps', (request, response) => {
   const { rep } = request.body;
 
-  database('states').select()
-  .then(states => {
-    let state_id;
-    let num_of_sens;
-
-    states.forEach(state => {
-      if(state.state === rep.state) {
-        state_id = parseInt(state.id);
-        num_of_sens = parseInt(state.num_of_sens) + 1;
-      }
-    })
-    return { state_id, num_of_sens }
-  })
-  .then(res => {
-    const newObj = Object.assign(rep, { state_id: res.state_id })
-    database('representatives').insert(newObj)
+  database('representatives').insert(rep)
+  .then(() => {
+    database('representatives').select()
+    .then(reps => response.status(200).send(reps))
     .then(() => {
-      database('representatives').select()
-      .then(senators => response.status(200).send(senators))
-      .then(() => {
-        database('states').where('id', res.state_id).update({ num_of_reps: res.num_of_sens })
+      database('states').where('id', rep.state_id).select()
+      .then(state => {
+        const update = state[0].num_of_reps + 1;
+        console.log(update);
+        database('states').where('id', rep.state_id).update({ num_of_reps: update })
         .then(() => console.log('states updated!'))
       })
-      .catch(err => response.status(422).send({ error: 'Could not process new record'}))
     })
+    .catch(err => response.status(422).send({ error: 'Could not process new record'}))
   })
 })
 
@@ -169,11 +147,13 @@ app.post('/api/v1/states', (request, response) => {
 
 //PUT or PATCH REQUESTS
 
-app.put('/api/v1/senators/:id', (request, response) => {
+app.patch('/api/v1/senators/:id', (request, response) => {
+  const { id, record } = request.body;
+
 
 })
 
-app.put('/api/v1/reps/:id', (request, response) => {
+app.patch('/api/v1/reps/:id', (request, response) => {
 
 })
 

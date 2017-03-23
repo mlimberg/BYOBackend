@@ -56,7 +56,6 @@ const data = senators.concat(reps);
 
 const stateObject = data.reduce((stateObj, obj)  => {
   const { state, role_type } = obj
-  console.log(obj);
   if(!stateObj[state]) {
     stateObj[state] = {
       state,
@@ -65,10 +64,8 @@ const stateObject = data.reduce((stateObj, obj)  => {
     }
   }
   if(obj.role_type === 'senator') {
-    console.log('sen!');
     stateObj[state].num_of_sens += 1
   } else if (obj.role_type === 'rep') {
-    console.log('rep!');
       stateObj[state].num_of_reps += 1
   }
   return stateObj
