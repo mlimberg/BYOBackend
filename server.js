@@ -148,31 +148,74 @@ app.post('/api/v1/states', (request, response) => {
 //PUT or PATCH REQUESTS
 
 app.patch('/api/v1/senators/:id', (request, response) => {
-  const { id, record } = request.body;
+  const { id, update } = request.body;
 
-
+  database('senators').where('id', id).update(update)
+  .then(() => {
+    database('senators').select()
+    .then(senators => response.status(200).send(senators))
+    .catch(err => response.status(404).send({ error: 'ID did not match any on record'}))
+  })
 })
 
 app.patch('/api/v1/reps/:id', (request, response) => {
+  const { id, update } = request.body;
 
+  database('representatives').where('id', id).update(update)
+  .then(() => {
+    database('representatives').select()
+    .then(reps => response.status(200).send(reps))
+    .catch(err => response.status(404).send({ error: 'ID did not match any on record'}))
+  })
 })
 
 app.patch('/api/v1/states/:id', (request, response) => {
+  const { id, update } = request.body;
 
+  database('states').where('id', id).update(update)
+  .then(() => {
+    database('states').select()
+    .then(states => response.status(200).send(states))
+    .catch(err => response.status(404).send({ error: 'ID did not match any on record'}))
+  })
 })
 
 //DELETE REQUESTS
 
 app.delete('/api/v1/senators/:id', (request, response) => {
+  const { id } = request.params;
 
+  database('senators').where('id', id).del()
+  .then(() => {
+    database('senators').select()
+    .then(senators => response.status(200).send(senators))
+    .catch(err => response.status(404).send({ error: 'ID did not match any on record' }))
+  })
 })
 
 app.delete('/api/v1/reps/:id', (request, response) => {
+  const { id } = request.params;
 
+  database('representatives').where('id', id).del()
+  .then(() => {
+    database('representatives').select()
+    .then(reps => response.status(200).send(reps))
+    .catch(err => response.status(404).send({ error: 'ID did not match any on record' }))
+  })
 })
 
 app.delete('/api/v1/states/:id', (request, response) => {
+  const { id } = request.params;
 
+  database('senators').where('state_id', id).del()
+  .then(() => {
+    database('representatives').where('state_id', id).del()
+    .then(() => {
+      database('states').where('id', id).del()
+      .then(() => response.status(200).send(`All records associated with state ID: ${id} have successfully been deleted`))
+      .catch(err => response.status(404).send({ error: 'ID did not match any on record' }))
+    })
+  })
 })
 
 

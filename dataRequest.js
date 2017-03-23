@@ -116,9 +116,6 @@ database('states').insert(states)
   })
 })
 
-
-
-
 app.listen(app.get('port'), () => {
   console.log(`It's lit AF over at ${app.get('port')}`);
 })
