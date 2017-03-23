@@ -125,11 +125,46 @@ app.post('/api/v1/senators', (request, response) => {
 })
 
 app.post('/api/v1/reps', (request, response) => {
+  const { rep } = request.body;
 
+  database('states').select()
+  .then(states => {
+    let state_id;
+    let num_of_sens;
+
+    states.forEach(state => {
+      if(state.state === rep.state) {
+        state_id = parseInt(state.id);
+        num_of_sens = parseInt(state.num_of_sens) + 1;
+      }
+    })
+    return { state_id, num_of_sens }
+  })
+  .then(res => {
+    const newObj = Object.assign(rep, { state_id: res.state_id })
+    database('representatives').insert(newObj)
+    .then(() => {
+      database('representatives').select()
+      .then(senators => response.status(200).send(senators))
+      .then(() => {
+        database('states').where('id', res.state_id).update({ num_of_reps: res.num_of_sens })
+        .then(() => console.log('states updated!'))
+      })
+      .catch(err => response.status(422).send({ error: 'Could not process new record'}))
+    })
+  })
 })
 
 app.post('/api/v1/states', (request, response) => {
+  const { state } = request.body;
 
+  database('states').insert(state)
+  .then(() => {
+    database('states').select()
+    .then(states => {
+      response.status(200).send(states)
+    })
+  })
 })
 
 //PUT or PATCH REQUESTS
