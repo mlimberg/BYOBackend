@@ -4,7 +4,7 @@
   "description": "back-end server and db for capstone",
   "main": "server.js",
   "scripts": {
-    "test": "\"node_modules/.bin/mocha ./test/**.js || true\"",
+    "test": "node_modules/.bin/mocha ./test/**.js || true",
     "start": "node server.js"
   },
   "repository": {

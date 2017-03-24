@@ -25,31 +25,55 @@ app.set('port', process.env.PORT || 3000);
 //GET REQUESTS
 
 app.get('/api/v1/senators', (request, response) => {
-  // const party  = request.param('party');
   const { party }  = request.query;
-  database('senators').where('party', party).select()
-  .then(sens => response.status(200).send(sens))
-  .catch(err => response.sendStatus(404))
+
+  if(!party) {
+    database('senators').select()
+    .then(sens => response.status(200).send(sens))
+    .catch(err => response.sendStatus(404))
+  } else {
+    database('senators').where('party', party).select()
+    .then(sens => response.status(200).send(sens))
+    .catch(err => response.sendStatus(404))
+  }
 })
 
 app.get('/api/v1/senators/:id', (request, response) => {
   const { id } = request.params;
   database('senators').where('id', id).select()
-  .then(senator => response.status(200).send(senator))
-  .catch(err => response.sendStatus(404))
+  .then(senator => {
+    if(senator.length > 0) {
+      response.status(200).send(senator)
+    } else {
+      response.status(404).send('ID not found')
+    }
+  })
 })
 
 app.get('/api/v1/reps', (request, response) => {
-  database('representatives').select()
-  .then(reps => response.status(200).send(reps))
-  .catch(err => response.sendStatus(404))
+  const { party } = request.query;
+
+  if(!party) {
+    database('representatives').select()
+    .then(reps => response.status(200).send(reps))
+    .catch(err => response.sendStatus(404))
+  } else {
+    database('representatives').where('party', party).select()
+    .then(reps => response.status(200).send(reps))
+    .catch(err => response.sendStatus(404))
+  }
 })
 
 app.get('/api/v1/reps/:id', (request, response) => {
   const { id } = request.params;
   database('representatives').where('id', id).select()
-  .then(rep => response.status(200).send(rep))
-  .catch(err => response.sendStatus(404))
+  .then(rep => {
+    if(rep.length > 0) {
+      response.status(200).send(rep)
+    } else {
+      response.status(404).send('ID not found')
+    }
+  })
 })
 
 app.get('/api/v1/states', (request, response) => {
@@ -60,11 +84,15 @@ app.get('/api/v1/states', (request, response) => {
 app.get('/api/v1/states/:id', (request, response) => {
   const { id } = request.params;
   database('states').where('id', id).select()
-  .then(state => response.status(200).send(state))
-  .catch(err => response.sendStatus(404))
-})
+  .then(state => {
+    if(state.length > 0) {
+      response.status(200).send(state)
+    } else {
+      response.status(404).send('ID not found')
+    }
+  })
+});
 
-//years left in office - still need to calculate years left correctly and then assign correctly
 app.get('/api/v1/senators/:id/remaining', (request, response) => {
   const { id } = request.params;
 
@@ -97,59 +125,69 @@ app.get('/api/v1/reps/:id/remaining', (request, response) => {
 
 app.post('/api/v1/senators', (request, response) => {
   const { senator } = request.body;
-  database('senators').insert(senator)
-  .then(() => {
-    database('senators').select()
-    .then(senators => response.status(200).send(senators))
+  if(senator) {
+    database('senators').insert(senator)
     .then(() => {
-      database('states').where('id', senator.state_id).select()
-      .then(state => {
-        const update = state[0].num_of_sens + 1;
-        console.log(update);
-        database('states').where('id', senator.state_id).update({ num_of_sens: update })
-        .then(() => console.log('states updated!'))
+      database('senators').select()
+      .then(senators => response.status(200).send(senators))
+      .then(() => {
+        database('states').where('id', senator.state_id).select()
+        .then(state => {
+          const update = state[0].num_of_sens + 1;
+          database('states').where('id', senator.state_id).update({ num_of_sens: update })
+          .then(() => console.log('states updated!'))
+        })
       })
     })
-    .catch(err => response.status(422).send({ error: 'Could not process new record'}))
-  })
+  } else {
+    response.status(422).send({ error: 'Could not process new record'})
+  }
 })
 
 app.post('/api/v1/reps', (request, response) => {
   const { rep } = request.body;
 
-  database('representatives').insert(rep)
-  .then(() => {
-    database('representatives').select()
-    .then(reps => response.status(200).send(reps))
+  if(rep) {
+    database('representatives').insert(rep)
     .then(() => {
-      database('states').where('id', rep.state_id).select()
-      .then(state => {
-        const update = state[0].num_of_reps + 1;
-        console.log(update);
-        database('states').where('id', rep.state_id).update({ num_of_reps: update })
-        .then(() => console.log('states updated!'))
+      database('representatives').select()
+      .then(reps => response.status(200).send(reps))
+      .then(() => {
+        database('states').where('id', rep.state_id).select()
+        .then(state => {
+          const update = state[0].num_of_reps + 1;
+          console.log(update);
+          database('states').where('id', rep.state_id).update({ num_of_reps: update })
+          .then(() => console.log('states updated!'))
+        })
       })
     })
-    .catch(err => response.status(422).send({ error: 'Could not process new record'}))
-  })
+  } else {
+    response.status(422).send({ error: 'Could not process new record'})
+  }
 })
 
 app.post('/api/v1/states', (request, response) => {
   const { state } = request.body;
 
-  database('states').insert(state)
-  .then(() => {
-    database('states').select()
-    .then(states => {
-      response.status(200).send(states)
+  if(state) {
+    database('states').insert(state)
+    .then(() => {
+      database('states').select()
+      .then(states => {
+        response.status(200).send(states)
+      })
     })
-  })
+  } else {
+    response.status(422).send({ error: 'Could not process new record'})
+  }
 })
 
 //PUT or PATCH REQUESTS
 
 app.patch('/api/v1/senators/:id', (request, response) => {
-  const { id, update } = request.body;
+  const { update } = request.body;
+  const { id } = request.params;
 
   database('senators').where('id', id).update(update)
   .then(() => {
@@ -160,7 +198,8 @@ app.patch('/api/v1/senators/:id', (request, response) => {
 })
 
 app.patch('/api/v1/reps/:id', (request, response) => {
-  const { id, update } = request.body;
+  const { update } = request.body;
+  const { id } = request.params;
 
   database('representatives').where('id', id).update(update)
   .then(() => {
@@ -171,7 +210,8 @@ app.patch('/api/v1/reps/:id', (request, response) => {
 })
 
 app.patch('/api/v1/states/:id', (request, response) => {
-  const { id, update } = request.body;
+  const { update } = request.body;
+  const { id } = request.params;
 
   database('states').where('id', id).update(update)
   .then(() => {
@@ -219,9 +259,10 @@ app.delete('/api/v1/states/:id', (request, response) => {
   })
 })
 
-
-app.listen(app.get('port'), () => {
-  console.log(`It's lit AF over at ${app.get('port')}`);
-})
+if(!module.parent) {
+  app.listen(app.get('port'), () => {
+    console.log(`It's lit AF over at ${app.get('port')}`);
+  })
+}
 
 module.exports = app;
