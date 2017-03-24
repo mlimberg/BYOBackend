@@ -122,6 +122,3 @@ Current senator profile information returns an array of senator objects.
   }
 ]
 ```
-
-[OAuth]: https://github.com/500px/api-documentation/tree/master/authentication
-[full format]: https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#profile-format
