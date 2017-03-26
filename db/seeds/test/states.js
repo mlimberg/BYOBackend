@@ -18,7 +18,7 @@ exports.seed = function(knex, Promise) {
       knex('states').insert({
         'id': 13,
         'state': 'WI',
-        'num_of_reps': 0,
+        'num_of_reps': 30,
         'num_of_sens': 0
       })
     ]);

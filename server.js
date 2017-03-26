@@ -77,8 +77,15 @@ app.get('/api/v1/reps/:id', (request, response) => {
 })
 
 app.get('/api/v1/states', (request, response) => {
-  database('states').select()
-  .then(states => response.status(200).send(states))
+  const { minReps } = request.query;
+
+  if(!minReps) {
+    database('states').select()
+    .then(states => response.status(200).send(states))
+  } else {
+    database('states').where('num_of_reps', '>=', minReps).select()
+    .then(states => response.status(200).send(states));
+  }
 })
 
 app.get('/api/v1/states/:id', (request, response) => {
@@ -129,7 +136,7 @@ app.post('/api/v1/senators', (request, response) => {
     database('senators').insert(senator)
     .then(() => {
       database('senators').select()
-      .then(senators => response.status(200).send(senators))
+      .then(senators => response.status(201).send(senators))
       .then(() => {
         database('states').where('id', senator.state_id).select()
         .then(state => {
@@ -151,7 +158,7 @@ app.post('/api/v1/reps', (request, response) => {
     database('representatives').insert(rep)
     .then(() => {
       database('representatives').select()
-      .then(reps => response.status(200).send(reps))
+      .then(reps => response.status(201).send(reps))
       .then(() => {
         database('states').where('id', rep.state_id).select()
         .then(state => {
@@ -175,7 +182,7 @@ app.post('/api/v1/states', (request, response) => {
     .then(() => {
       database('states').select()
       .then(states => {
-        response.status(200).send(states)
+        response.status(201).send(states)
       })
     })
   } else {

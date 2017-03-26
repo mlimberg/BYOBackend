@@ -93,6 +93,7 @@ database('states').insert(states)
         }
       })
       senObj.state_id = id
+      delete senObj.state;
       return senObj
     })
 
@@ -104,8 +105,11 @@ database('states').insert(states)
         }
       })
       repObj.state_id = id
+      delete repObj.state;
       return repObj
     })
+
+    console.log(finalSenData);
     database('senators').insert(finalSenData)
     .then(() => {
       database('representatives').insert(finalRepData)
