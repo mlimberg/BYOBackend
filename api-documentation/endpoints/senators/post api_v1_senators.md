@@ -47,7 +47,7 @@ Current senator profile information returns an array of senator objects.
     "party": "R",
     "created_at": null,
     "updated_at": null,
-    "state_id": 225
+    "state_id": 25
   },
   {
     "id": 2,
@@ -58,7 +58,7 @@ Current senator profile information returns an array of senator objects.
     "party": "R",
     "created_at": null,
     "updated_at": null,
-    "state_id": 226
+    "state_id": 26
   },
   {
    "id": 3,
