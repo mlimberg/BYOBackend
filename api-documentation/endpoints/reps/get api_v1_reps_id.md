@@ -9,7 +9,7 @@
 * ID (integer)
 
 ## Return format
-* Current representative profile object within an array
+* Returns an array containing the matching representative object
 
 ## Errors
 * **404** - not found
