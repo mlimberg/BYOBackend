@@ -17,7 +17,7 @@ IF no query parameter is defined, it will return ALL representatives.
 
 
 ## Return format
-Current rep profile information returns an array of rep objects.
+* Returns an array with all reps
 
 
 ## Errors
