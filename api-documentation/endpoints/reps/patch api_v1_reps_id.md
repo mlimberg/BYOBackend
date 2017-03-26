@@ -28,7 +28,7 @@ update: {
 ## Example
 **Request**
 
-    https://api/v1/senators/1
+    https://api/v1/reps/1
 
 **Return**
 ``` json
