@@ -9,7 +9,7 @@
 * ID (integer)
 
 ## Body
-* requires `update` object containing field(s) to be modified. Example:
+* Requires `update` object containing field(s) to be modified. Example:
 
 ```
 update: {
