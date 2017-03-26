@@ -8,7 +8,7 @@
 
 ## Body
 
-* requires an object with all of the necessary key-value pairs. Example:
+* Requires an object with all of the necessary key-value pairs. Example:
 
 ```
   body: {
