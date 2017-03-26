@@ -9,7 +9,7 @@
 * ID (integer)
 
 ## Return format
-* Current senator profile information returns an array of senator objects.
+* Returns an array containing the matched senator object
 
 
 ## Errors
