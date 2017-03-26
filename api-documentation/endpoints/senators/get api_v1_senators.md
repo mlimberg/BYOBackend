@@ -3,7 +3,7 @@
     GET senators
 
 ## Description
-IF no query parameter is defined, it will return ALL senators.
+* Return all senators unless a query parameter is defined
 
 ## Parameters
 * To get all republican senators add:
@@ -16,7 +16,7 @@ IF no query parameter is defined, it will return ALL senators.
 
 
 ## Return format
-Current senator profile information returns an array of senator objects.
+* Current senator profile information returns an array of senator objects.
 
 
 ## Errors
