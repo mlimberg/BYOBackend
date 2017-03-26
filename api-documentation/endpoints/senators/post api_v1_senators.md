@@ -8,7 +8,7 @@
 
 ## Body
 
-requires an object with all of the necessary key-value pairs. Example:
+* Requires an object with all of the necessary key-value pairs. Example:
 
 ```
   body: {
@@ -22,7 +22,7 @@ requires an object with all of the necessary key-value pairs. Example:
 ```
 
 ## Return format
-Current senator profile information returns an array of senator objects.
+* Returns an array with all senators including newly added record
 
 
 ## Errors
