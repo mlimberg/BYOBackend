@@ -59,14 +59,8 @@ The BYOBackend API serves to provide data on current US senators, representative
 - **[<code>DELETE</code> api/v1/states/:id](https://github.com/mlimberg/BYOBackend/blob/master/api-documentation/endpoints/states/delete%20api_v1_states_id.md)**
 
 ## FAQ
-### Question 1?
+### How does deleting a state record impact other tables that depend on the state ID?
+* Deleting a state record will also delete ALL records (both senator and representative) from their respective table with the corresponding state ID
 
 
-### Question 2?
-
-
-### Question 3?
-
-
-### Question 4?
 
