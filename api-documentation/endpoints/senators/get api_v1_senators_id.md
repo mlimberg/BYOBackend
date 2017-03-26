@@ -3,13 +3,13 @@
     GET senators/:id
 
 ## Description
-IF no query parameter is defined, it will return ALL senators.
+* Return data for a specific senator
 
 ## Parameters
 * ID (integer)
 
 ## Return format
-Current senator profile information returns an array of senator objects.
+* Current senator profile information returns an array of senator objects.
 
 
 ## Errors
