@@ -148,7 +148,7 @@ describe('Server', () => {
       })
     })
 
-    it('/states - should return all states if no query param is set', (done) => {
+    it('/states - should return all states if no request query is set', (done) => {
       chai.request(app)
       .get('/api/v1/states')
       .end((err, res) => {
@@ -157,6 +157,20 @@ describe('Server', () => {
         expect(res).to.be.json;
         expect(res.body).to.be.a('array');
         expect(res.body).to.have.length(3);
+        done()
+      })
+    })
+
+    it('/states - should return only states with greater than or equal number of reps stated in the request query', (done) => {
+      chai.request(app)
+      .get('/api/v1/states?minReps=30')
+      .end((err, res) => {
+        if(err) { done(err) }
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.a('array');
+        expect(res.body).to.have.length(1);
+        expect(res.body[0].num_of_reps).to.equal(30);
         done()
       })
     })
@@ -233,7 +247,7 @@ describe('Server', () => {
       })
       .end((err, res) => {
         if(err) { done(err) }
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(201);
         expect(res).to.be.json;
         expect(res.body).to.be.a('array');
         expect(res.body).to.have.length(4);
@@ -269,7 +283,7 @@ describe('Server', () => {
       })
       .end((err, res) => {
         if(err) { done(err) }
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(201);
         expect(res).to.be.json;
         expect(res.body).to.be.a('array');
         expect(res.body).to.have.length(4);
@@ -301,7 +315,7 @@ describe('Server', () => {
       })
       .end((err, res) => {
         if(err) { done(err) }
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(201);
         expect(res).to.be.json;
         expect(res.body).to.be.a('array');
         expect(res.body).to.have.length(4);
