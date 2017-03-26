@@ -3,7 +3,7 @@
     DELETE senators/:id
 
 ## Description
-* delete an entire senator record in the DB
+* Delete an entire senator record in the DB
 
 ## Parameters
 * ID (integer)
