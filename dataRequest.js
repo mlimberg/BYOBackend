@@ -109,7 +109,6 @@ database('states').insert(states)
       return repObj
     })
 
-    console.log(finalSenData);
     database('senators').insert(finalSenData)
     .then(() => {
       database('representatives').insert(finalRepData)

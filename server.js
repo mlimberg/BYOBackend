@@ -163,7 +163,6 @@ app.post('/api/v1/reps', (request, response) => {
         database('states').where('id', rep.state_id).select()
         .then(state => {
           const update = state[0].num_of_reps + 1;
-          console.log(update);
           database('states').where('id', rep.state_id).update({ num_of_reps: update })
           .then(() => console.log('states updated!'))
         })
@@ -268,7 +267,7 @@ app.delete('/api/v1/states/:id', (request, response) => {
 
 if(!module.parent) {
   app.listen(app.get('port'), () => {
-    console.log(`It's lit AF over at ${app.get('port')}`);
+    console.log(`Server running at ${app.get('port')}`);
   })
 }
 
