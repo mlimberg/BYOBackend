@@ -2,9 +2,27 @@
 
 # About
 
-##### Current Version: 1.0
+#### Current Version: 1.0
 
 The BYOBackend API serves to provide data on current US senators, representatives and has the ability to sort by state, party, years left in office, district, etc. Below is a list of specifc endpoints by data-type.
+
+#### Disclaimer:
+The current version of this API fails to meet the JSON API standards due to timing constraints. The following are standards intended to be corrected in the next version to be released:
+
+##### Meets:
+* **Response Codes**:
+  * All endpoints responde with a `200 OK` status for any successful response, `201 CREATED` for any post requests
+  * All endpoints requesting a specific resource respond with a `404 NOT FOUND` if the request ID does not match any records in the DB
+
+##### Future Releases:
+* **Top-level Members**: 
+  * The next release will send all primary data within a _data_ object, containing an identifying "type" attribute
+  * The next release will send all responses with a _link_ object identifying the requested endpoint link as well as any other links relevant to the request (i.e. senator/rep website information)
+  * Errors will be wrapping in a similar _error_ object with a "type" attribute identifying the error code
+* **Pagination**: 
+  * The next release may limit representatives responses to paginated views, only showing a limited number of records unless called out specifically in the query paramters
+* **Sorting**:
+  * The next release will allow for a sorting parameter to be included in the `GET states/` reqest
 
 ***
 
