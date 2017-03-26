@@ -10,7 +10,7 @@
 * ID (integer)
 
 ## Return format
-* Returns a rep object with an added `years-left` property stating how many years they have left until the next election.
+* Returns a rep object with an added `years-left` property stating how many years they have left until the next election
 
 
 ## Errors
